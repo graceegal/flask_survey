@@ -4,23 +4,23 @@ from surveys import satisfaction_survey as survey
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "never-tell!"
-app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = True
+app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 
 debug = DebugToolbarExtension(app)
 
 RESPONSES = []
+# 0123
 
 
 @app.get('/')
 def survey_start():
     title = survey.title
     instructions = survey.instructions
+    RESPONSES = []
 
     return render_template('survey_start.html',
                            title=title,
                            instructions=instructions)
-# @app.post('/begin')
-# def redirect_to_question():
 
 
 @app.post('/begin')
@@ -38,3 +38,25 @@ def show_question_form(question_number):
         question=question
     )
 
+
+@app.post('/answer')
+def store_answer():
+    answer = request.form.get('answer')
+    RESPONSES.append(answer)
+    print('responses', RESPONSES)
+    question_number = len(RESPONSES)
+    while (question_number < len(survey.questions)):
+        return redirect(f'/questions/{question_number}')
+
+    return redirect('/thank_you')
+
+
+@app.get('/thank_you')
+def redirect_thank_you():
+    questions = survey.questions
+
+    return render_template(
+        'completion.html',
+        responses=RESPONSES,
+        questions=questions
+    )
