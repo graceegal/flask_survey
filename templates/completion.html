@@ -4,11 +4,11 @@
 
 <h1>Thanks for completing this survey!</h1>
 
-<!-- <ul> -->
-{%for question in questions%}
-<p>{{question}}</p>
-<!-- <li><strong>{{question}}</strong>{{responses[{{loop.index}}]}}</li> -->
-{%endfor%}
-<!-- </ul> -->
+<ul>
+{% for question in questions %}
+    <li><strong>{{ question.prompt }}</strong>{{ responses[loop.index0] }}</li>
+{% endfor %}
+
+</ul>
 
 {% endblock %}
